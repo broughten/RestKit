@@ -54,8 +54,11 @@ extern NSString * const RKManagedObjectStoreDidFailSaveNotification;
 // The filename of the database backing this object store
 @property (nonatomic, readonly) NSString *storeFilename;
 
+@property (nonatomic, retain) NSString *managedObjectStoreThreadDictionaryContextKey;
+
 // The full path to the database backing this object store
 @property (nonatomic, readonly) NSString *pathToStoreFile;
+
 
 // Core Data
 @property (nonatomic, readonly) NSManagedObjectModel *managedObjectModel;

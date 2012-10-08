@@ -77,9 +77,10 @@
     [matcher release];
 }
 
-- (RKObjectMapping *)objectMappingForDictionary:(NSDictionary *)data
+- (RKObjectMapping *)objectMappingForDictionary:(NSObject *)data
 {
-    NSAssert([data isKindOfClass:[NSDictionary class]], @"Dynamic object mapping can only be performed on NSDictionary mappables, got %@", NSStringFromClass([data class]));
+    //Removed by JC
+    //NSAssert([data isKindOfClass:[NSDictionary class]], @"Dynamic object mapping can only be performed on NSDictionary mappables, got %@", NSStringFromClass([data class]));
     RKObjectMapping *mapping = nil;
 
     RKLogTrace(@"Performing dynamic object mapping for mappable data: %@", data);
