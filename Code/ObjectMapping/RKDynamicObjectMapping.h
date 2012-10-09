@@ -93,7 +93,7 @@ typedef RKObjectMapping *(^RKDynamicObjectMappingDelegateBlock)(id);
  Invoked by the RKObjectMapper and RKObjectMappingOperation to determine the appropriate RKObjectMapping to use
  when mapping the specified dictionary of mappable data.
  */
-- (RKObjectMapping *)objectMappingForDictionary:(NSDictionary *)dictionary;
+- (RKObjectMapping *)objectMappingForDictionary:(NSObject *)dictionary;
 
 @end
 
