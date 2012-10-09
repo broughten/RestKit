@@ -36,7 +36,6 @@
 #define RKLogComponent lcl_cRestKitCoreData
 
 NSString * const RKManagedObjectStoreDidFailSaveNotification = @"RKManagedObjectStoreDidFailSaveNotification";
-static NSString * const RKManagedObjectStoreThreadDictionaryContextKey = @"RKManagedObjectStoreThreadDictionaryContextKey";
 static NSString * const RKManagedObjectStoreThreadDictionaryEntityCacheKey = @"RKManagedObjectStoreThreadDictionaryEntityCacheKey";
 
 static RKManagedObjectStore *defaultObjectStore = nil;
@@ -59,6 +58,7 @@ static RKManagedObjectStore *defaultObjectStore = nil;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize cacheStrategy = _cacheStrategy;
 @synthesize primaryManagedObjectContext;
+@synthesize managedObjectStoreThreadDictionaryContextKey = _managedObjectStoreThreadDictionaryContextKey;
 
 + (RKManagedObjectStore *)defaultObjectStore
 {
@@ -118,6 +118,8 @@ static RKManagedObjectStore *defaultObjectStore = nil;
     self = [self init];
     if (self) {
         _storeFilename = [storeFilename retain];
+        
+        _managedObjectStoreThreadDictionaryContextKey = @"RKManagedObjectStoreThreadDictionaryContextKey";
 
         if (nilOrDirectoryPath == nil) {
             // If initializing into Application Data directory, ensure the directory exists
@@ -196,10 +198,11 @@ static RKManagedObjectStore *defaultObjectStore = nil;
 
 - (void)clearThreadLocalStorage
 {
+    
     // Clear out our Thread local information
-    NSManagedObjectContext *managedObjectContext = [self threadLocalObjectForKey:RKManagedObjectStoreThreadDictionaryContextKey];
+    NSManagedObjectContext *managedObjectContext = [self threadLocalObjectForKey:self.managedObjectStoreThreadDictionaryContextKey];
     if (managedObjectContext) {
-        [self removeThreadLocalObjectForKey:RKManagedObjectStoreThreadDictionaryContextKey];
+        [self removeThreadLocalObjectForKey:self.managedObjectStoreThreadDictionaryContextKey];
     }
     if ([self threadLocalObjectForKey:RKManagedObjectStoreThreadDictionaryEntityCacheKey]) {
         [self removeThreadLocalObjectForKey:RKManagedObjectStoreThreadDictionaryEntityCacheKey];
@@ -367,11 +370,14 @@ static RKManagedObjectStore *defaultObjectStore = nil;
 
     [_persistentStoreCoordinator release];
     _persistentStoreCoordinator = nil;
+    
+    //Change the key used to set/retrieve MOCs from thread local storage.
+    self.managedObjectStoreThreadDictionaryContextKey = [NSString stringWithFormat:@"%@%f", self.managedObjectStoreThreadDictionaryContextKey, [[NSDate date] timeIntervalSinceReferenceDate]];;
 
     if (seedFile) {
         [self createStoreIfNecessaryUsingSeedDatabase:seedFile];
     }
-
+    
     [self createPersistentStoreCoordinator];
 
     // Recreate the MOC
@@ -390,12 +396,12 @@ static RKManagedObjectStore *defaultObjectStore = nil;
     }
 
     // Background threads leverage thread-local storage
-    NSManagedObjectContext *managedObjectContext = [self threadLocalObjectForKey:RKManagedObjectStoreThreadDictionaryContextKey];
+    NSManagedObjectContext *managedObjectContext = [self threadLocalObjectForKey:self.managedObjectStoreThreadDictionaryContextKey];
     if (!managedObjectContext) {
         managedObjectContext = [self newManagedObjectContext];
 
         // Store into thread local storage dictionary
-        [self setThreadLocalObject:managedObjectContext forKey:RKManagedObjectStoreThreadDictionaryContextKey];
+        [self setThreadLocalObject:managedObjectContext forKey:self.managedObjectStoreThreadDictionaryContextKey];
         [managedObjectContext release];
 
         // If we are a background Thread MOC, we need to inform the main thread on save
