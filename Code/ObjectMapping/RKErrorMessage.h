@@ -30,4 +30,6 @@
  */
 @property (nonatomic, retain) NSString *errorMessage;
 
+@property (nonatomic, retain) NSString *errorTitle;
+
 @end

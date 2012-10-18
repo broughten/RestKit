@@ -24,10 +24,12 @@
 @implementation RKErrorMessage
 
 @synthesize errorMessage = _errorMessage;
+@synthesize errorTitle = _errorTitle;
 
 - (void)dealloc
 {
     [_errorMessage release];
+    [_errorTitle release];
     [super dealloc];
 }
 
@@ -35,5 +37,6 @@
 {
     return _errorMessage;
 }
+
 
 @end
