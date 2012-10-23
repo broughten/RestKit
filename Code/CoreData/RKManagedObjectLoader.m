@@ -167,7 +167,9 @@
         RKLogInfo(@"Deleting local object %@ due to DELETE request", backgroundThreadObject);
         [[self.objectStore managedObjectContextForCurrentThread] deleteObject:backgroundThreadObject];
     }
-
+//    NSLog(@"HI JC!!! here's result JUST before save: %@\n and here's fields: %@", [[[result asDictionary] objectForKey:@"Interaction"] valueForKey:@"request"], [[[[result asDictionary] objectForKey:@"Interaction"] valueForKey:@"request"] valueForKey:@"fields"]);
+    NSLog(@"HI JC!!! about to call save");
+    
     // If the response was successful, save the store...
     if ([self.response isSuccessful]) {
         [self deleteCachedObjectsMissingFromResult:result];
@@ -188,14 +190,17 @@
             return;
         }
     }
-
+    
+    NSLog(@"HI JC!!! just after save. At this point values have changed.");
     NSDictionary *dictionary = [result asDictionary];
+    //NSLog(@"HI JC!!! here's result JUST after save: %@\n and here's fields: %@", [[dictionary objectForKey:@"Interaction"] valueForKey:@"request"], [[[dictionary objectForKey:@"Interaction"] valueForKey:@"request"] valueForKey:@"fields"]);
     NSMethodSignature *signature = [self methodSignatureForSelector:@selector(informDelegateOfObjectLoadWithResultDictionary:)];
     RKManagedObjectThreadSafeInvocation *invocation = [RKManagedObjectThreadSafeInvocation invocationWithMethodSignature:signature];
     [invocation setObjectStore:self.objectStore];
     [invocation setTarget:self];
     [invocation setSelector:@selector(informDelegateOfObjectLoadWithResultDictionary:)];
     [invocation setArgument:&dictionary atIndex:2];
+    NSLog(@"HI JC!!! what ar the managedObjectKeyPaths?: %@", _managedObjectKeyPaths);
     [invocation setManagedObjectKeyPaths:_managedObjectKeyPaths forArgument:2];
     [invocation invokeOnMainThread];
 }

@@ -398,6 +398,7 @@ static RKManagedObjectStore *defaultObjectStore = nil;
     // Background threads leverage thread-local storage
     NSManagedObjectContext *managedObjectContext = [self threadLocalObjectForKey:self.managedObjectStoreThreadDictionaryContextKey];
     if (!managedObjectContext) {
+        NSLog(@"HI JC!!! having to create a new MOC for this thread");
         managedObjectContext = [self newManagedObjectContext];
 
         // Store into thread local storage dictionary
@@ -417,13 +418,18 @@ static RKManagedObjectStore *defaultObjectStore = nil;
 - (void)mergeChangesOnMainThreadWithNotification:(NSNotification *)notification
 {
     assert([NSThread isMainThread]);
+    NSLog(@"HI JC!!! merging changes onto main thread %@", [NSDate date]);
     [self.primaryManagedObjectContext performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:)
                                                 withObject:notification
                                              waitUntilDone:YES];
+    
+    NSLog(@"HI JC!!! done merging changes onto main thread %@", [NSDate date]);
+    
 }
 
 - (void)mergeChanges:(NSNotification *)notification
 {
+    NSLog(@"HI JC!!!! calling merge changes");
     // Merge changes into the main context on the main thread
     [self performSelectorOnMainThread:@selector(mergeChangesOnMainThreadWithNotification:) withObject:notification waitUntilDone:YES];
 }

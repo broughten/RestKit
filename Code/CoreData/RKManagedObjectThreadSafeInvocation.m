@@ -41,10 +41,12 @@
 
 - (void)setValue:(id)value forKeyPathOrKey:(NSString *)keyPath object:(id)object
 {
+    NSLog(@"HI JC!!! setting value %@ for keyPath %@", value, keyPath);
     [object setValue:value forKeyPath:keyPath];
 
     id testValue = [object valueForKeyPath:keyPath];
     if (![value isEqual:testValue]) {
+        NSLog(@"HI JC!!! here's a weird place to ever get. did we get in here?");
         [object setValue:value forKey:keyPath];
         testValue = [object valueForKeyPath:keyPath];
 
@@ -54,10 +56,13 @@
 
 - (void)serializeManagedObjectsForArgument:(id)argument withKeyPaths:(NSSet *)keyPaths
 {
+    NSLog(@"HI JC!!! called serialize managed objects for argument %@", argument);
+    
     for (NSString *keyPath in keyPaths) {
         id value = [argument valueForKeyPath:keyPath];
         if ([value isKindOfClass:[NSManagedObject class]]) {
             NSManagedObjectID *objectID = [(NSManagedObject *)value objectID];
+            NSLog(@"HI JC!!! serializing objects, and we have an ns managed object with id: %@", objectID);
             [self setValue:objectID forKeyPathOrKey:keyPath object:argument];
         } else if ([value respondsToSelector:@selector(allObjects)]) {
             id collection = [[[[[value class] alloc] init] autorelease] mutableCopy];
@@ -103,6 +108,8 @@
 }
 - (void)serializeManagedObjects
 {
+    NSLog(@"HI JC!!! called invoke serialize managed objects");
+    
     for (NSNumber *argumentIndex in _argumentKeyPaths) {
         NSSet *managedKeyPaths = [_argumentKeyPaths objectForKey:argumentIndex];
         id argument = nil;
@@ -127,12 +134,14 @@
 
 - (void)performInvocationOnMainThread
 {
+    NSLog(@"HI JC!!! performing invokation on man thread");
     [self deserializeManagedObjects];
     [self invoke];
 }
 
 - (void)invokeOnMainThread
 {
+    NSLog(@"HI JC!!! called invoke on main thread");
     [self retain];
     [self serializeManagedObjects];
     [self performSelectorOnMainThread:@selector(performInvocationOnMainThread) withObject:nil waitUntilDone:YES];
