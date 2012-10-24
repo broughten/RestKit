@@ -380,7 +380,6 @@
     }
 
     RKLogDebug(@"Finished performing object mapping. Results: %@", results);
-//    NSLog(@"HI JC!!! before saving store here's request: %@\n and here's fields: %@", [[results objectForKey:@"Interaction"] valueForKey:@"request"], [[[results objectForKey:@"Interaction"] valueForKey:@"request"] valueForKey:@"fields"]);
 
     return [RKObjectMappingResult mappingResultWithDictionary:results];
 }
