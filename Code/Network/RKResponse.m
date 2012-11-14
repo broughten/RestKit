@@ -384,7 +384,7 @@ return __VA_ARGS__;                                                             
 
 - (BOOL)isSuccessful
 {
-    return (([self statusCode] >= 200 && [self statusCode] < 300) || ([self wasLoadedFromCache]));
+    return (([self statusCode] >= 200 && [self statusCode] < 300) || ([self wasLoadedFromCache]) || [self isConflict]);
 }
 
 - (BOOL)isRedirection
@@ -394,7 +394,7 @@ return __VA_ARGS__;                                                             
 
 - (BOOL)isClientError
 {
-    return ([self statusCode] >= 400 && [self statusCode] < 500);
+    return ([self statusCode] >= 400 && [self statusCode] < 500 && ![self isConflict]);
 }
 
 - (BOOL)isServerError
