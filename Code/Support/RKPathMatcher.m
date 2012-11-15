@@ -125,11 +125,12 @@ NSString *RKEncodeURLString(NSString *unencodedString) {
 {
     NSAssert(self.socPattern != NULL, @"Matcher has no established pattern.  Instantiate it using matcherWithPattern: before attempting a pattern match.");
     NSMutableDictionary *argumentsCollection = [NSMutableDictionary dictionary];
-    if ([self bifurcateSourcePathFromQueryParameters]) {
+    //JC removed this to get paths containing query parameters to work. be on the lookout for weird bugs.
+    //if ([self bifurcateSourcePathFromQueryParameters]) {
         if (shouldTokenize) {
             [argumentsCollection addEntriesFromDictionary:self.queryParameters];
         }
-    }
+    //}
     if (![self matches])
         return NO;
     if (!arguments) {
