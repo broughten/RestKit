@@ -636,7 +636,7 @@
             break;
 
         case NSFetchedResultsChangeUpdate:
-            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:adjIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:adjIndexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
 
         case NSFetchedResultsChangeMove:
