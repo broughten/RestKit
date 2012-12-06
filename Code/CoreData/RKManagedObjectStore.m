@@ -414,9 +414,17 @@ static RKManagedObjectStore *defaultObjectStore = nil;
     return managedObjectContext;
 }
 
+
 - (void)mergeChangesOnMainThreadWithNotification:(NSNotification *)notification
 {
     assert([NSThread isMainThread]);
+	// Fault in all updated objects
+	NSArray* updates = [[notification.userInfo objectForKey:@"updated"] allObjects];
+	for (NSInteger i = [updates count]-1; i >= 0; i--)
+	{
+		[[self.primaryManagedObjectContext objectWithID:[[updates objectAtIndex:i] objectID]] willAccessValueForKey:nil];
+	}
+    
     [self.primaryManagedObjectContext performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:)
                                                 withObject:notification
                                              waitUntilDone:YES];
