@@ -346,7 +346,7 @@ static RKManagedObjectStore *defaultObjectStore = nil;
         if (self.delegate != nil && [self.delegate respondsToSelector:@selector(managedObjectStore:didFailToCreatePersistentStoreCoordinatorWithError:)]) {
             [self.delegate managedObjectStore:self didFailToCreatePersistentStoreCoordinatorWithError:error];
         } else {
-            NSAssert(NO, @"Managed object store failed to create persistent store coordinator: %@", error);
+            //NSAssert(NO, @"Managed object store failed to create persistent store coordinator: %@", error);
         }
     }
 }
